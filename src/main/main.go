@@ -7,8 +7,9 @@ import (
   f "fmt" // パッケージ名を変える
   _ "github.com/wdpress/gosample" // インポートしたパッケージを使わない
   . "strings" // パッケージ名を省略する
-  _ "os"
-  _ "log"
+  "os"
+  "log"
+  "encoding/json"
 )
 
 // 構造体。大文字から始まるフィールド名はパブリック
@@ -92,6 +93,25 @@ func NewUser(firstName, lastName string) *User {
   }
 }
 
+/*
+ * type Person struct {
+ *   ID int
+ *   Name string
+ *   Email string
+ *   Age int
+ *   Address string
+ *   memo string // 小文字で始まるプライベートなフィールドはJSONに含まれない
+ * }
+ */
+
+type Person struct {
+  ID int        `json:"id"`
+  Name string   `json:"name"`
+  Email string  `json:"-"`
+  Age int       `json:"age"`
+  Address string `json:"address,omitempty"`
+  memo string // 小文字で始まるプライベートなフィールドはJSONに含まれない
+}
 
 
 func main() {
@@ -319,19 +339,82 @@ func main() {
   f.Println(task5.FullName()) // User型のメソッド
   f.Println(task5.User) // User型自体
 
-  
+
   // キャスト
   var ii uint8 = 3
   var jj uint32 = uint32(ii)
   f.Println(jj)
 
   var ss = "abc"
+  // バイトスライス（要はシングルクォートで囲った文字'a'のスライス）に変換することは良くあるっぽい
   var byby []byte = []byte(ss)
   f.Println(byby)
 
 
   IsString("hogefuga")
   IsString(123)
+
+
+  // encoding/jsonパッケージ
+  person := &Person{
+    ID: 1,
+    Name: "Gopher",
+    Email: "gopher@example.org",
+    Age: 5,
+    Address: "",
+    memo: "golang lover",
+  }
+
+  var json_person []byte
+  json_person, err := json.Marshal(person)
+  if err != nil {
+    log.Fatal(err)
+  }
+  f.Println(string(json_person))
+
+  var struct_person Person
+  if json.Unmarshal(json_person, &struct_person) != nil {
+    log.Fatal(err)
+  }
+  f.Println(struct_person)
+
+
+
+  // osパッケージ ファイルの生成
+  // ioパッケージ ファイルの読み書き
+  file, err := os.Create("./file.txt")
+  if err != nil {
+    log.Fatal(err)
+  }
+  // defer file.Close() // プログラム終了時にファイルを閉じる
+
+  // stringをバイトスライスへキャストして書き込むデータを用意
+  bs := []byte("hello world こんにちは世界\n")
+  // ファイルへ書き込む。第一戻り値の書き込まれたバイト数はここでは無視
+  _, err = file.Write(bs)
+  if err != nil {
+    log.Fatal(err)
+  }
+  _, err = file.WriteString("WriteString()を使えば毎回バイトスライスに変換しなくてOK\n")
+  if err != nil {
+    log.Fatal(err)
+  }
+  file.Close()
+
+  // 既存ファイルの読み込み
+  file, err = os.Open("./file.txt")
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer file.Close() // プログラム終了時にファイルを閉じる
+  content := make([]byte, 20) // 20バイトのスライスを作成
+  _, err = file.Read(content)
+  if err != nil {
+    f.Print("error")
+    log.Fatal(err)
+  }
+  f.Println(string(content))
+
 }
 
 

@@ -36,7 +36,7 @@ go fmt hello.go
 GOPATHとディレクトリ名の規約による依存関係解決
 
 - bin/
-- pkg/
+- pkg/ 依存パッケージのオブジェクトファイル
 - src/
 
 ビルドして$GOPATH/bin/へインストール
@@ -233,3 +233,25 @@ export PATH=$PATH:$GOPATH/bin
   - 第二戻り値には判定結果
 - switchと組み合わせて型による分岐処理ができる（Type Switch）
   - switch v := value.(type) {
+
+# 標準パッケージ
+- encoding/json パッケージ
+  - json.Marshal(構造体)
+  - 小文字で始まるプライベートなフィールドは、基本的にJSONに含まれない
+  - タグ
+    - ``json:"name"`       // nameというキーで格納`
+    - ``json:"-"`          // JSONに格納しない`
+    - ``json:",omitempty"` // 値が空なら無視`
+    - ``json:",string"`    // 値をJSONとして格納`
+    - ダブルクォーテーションが抜けてもコンパイルエラーにならず、タグで指定した処理も動かなかったので注意
+  - err := json.Unmarshal(JSON文字列, &格納先構造体のポインタ)
+- osパッケージ ファイルの作成やオープン
+  - `file, err := os.Create("ファイルのパス") // os.File構造体へのポインタを返す`
+  - `defer file.Close() // 関数の終わりでdeferによって必ずファイルを閉じている`
+  - `*os.File`はio.ReadWriteCloserインタフェースを実装している
+  - `file, err := os.Open("すでにあるファイルのパス")`
+- ioパッケージ ファイルの読み書き
+  - Write([]byte), WriteString(string)
+  - file.Read([]byte)
+  - `content := make([]byte, 20) // 20バイトのスライスを作成`
+
