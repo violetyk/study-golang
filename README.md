@@ -254,4 +254,11 @@ export PATH=$PATH:$GOPATH/bin
   - Write([]byte), WriteString(string)
   - file.Read([]byte)
   - `content := make([]byte, 20) // 20バイトのスライスを作成`
+  - JSONのEncoder/Decoderは引数にio.ReaderWriterを扱うAPIとなっている
+  - そのメソッドにio.ReadWriterである`*os.File`を渡してあげればファイルへJSONの読み書きができる
+  - 標準ライブラリには、io.Reader, io.Writerを中心として設計したAPIが多くある
+- io/ioutilパッケージは簡単ファイル操作ができて便利
+  - `ioutil.ReadAll(*os.File)`
+  - `ioutil.ReadFile("./file.txt")`
+  - `ioutil.WriteFile("./file.txt", bs2, 0666)`
 

@@ -10,6 +10,7 @@ import (
   "os"
   "log"
   "encoding/json"
+  "io/ioutil"
 )
 
 // 構造体。大文字から始まるフィールド名はパブリック
@@ -414,6 +415,57 @@ func main() {
     log.Fatal(err)
   }
   f.Println(string(content))
+
+
+
+  // JSONのEncoder/Decoder経由の保存
+  file2, err := os.Create("./person.json")
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer file2.Close()
+  // エンコーダの取得
+  encoder := json.NewEncoder(file2)
+  // JSONをエンコードしてデータを書き込む
+  err = encoder.Encode(person)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  file3, err := os.Open("./person.json")
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer file3.Close()
+  // デコーダの取得
+  decoder := json.NewDecoder(file3)
+  // ファイルからデコードしてPerson型の変数に書き込んでいる
+  var person2 Person
+  err = decoder.Decode(&person2)
+  if err != nil {
+    log.Fatal(err)
+  }
+  // 読み出した結果の表示
+  f.Println(person2)
+
+
+
+  // io/ioutilパッケージ
+  // ioutil.ReadAll()
+  file4, _ := os.Open("./file.txt")
+  content2, err := ioutil.ReadAll(file4)
+  f.Println(string(content2))
+
+  // ioutil.ReadFile()
+  content3, err := ioutil.ReadFile("./file.txt")
+  f.Println(string(content3))
+
+  // ioutil.WriteFile()
+  bs2 := []byte("バイトスライスをioutil.WriteFile()で簡単に書き込む\n")
+  // no new variables on left side of := のエラーになる
+  // err := ioutil.WriteFile("./file.txt", bs2, 0666) // 第三引数はパーミッション
+  ioutil.WriteFile("./file.txt", bs2, 0666) // 第三引数はパーミッション
+
 
 }
 
