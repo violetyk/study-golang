@@ -261,4 +261,9 @@ export PATH=$PATH:$GOPATH/bin
   - `ioutil.ReadAll(*os.File)`
   - `ioutil.ReadFile("./file.txt")`
   - `ioutil.WriteFile("./file.txt", bs2, 0666)`
-
+- net/httpパッケージ HTTPサーバやクライアントを作る
+  - `http.HandleFunc()`でルーティング
+  - `http.IndeHandler(w http.ResponseWriter, r *http.Request)`
+    - 第二引数にはリクエスト情報が入っている
+    - 組み立てた結果をResponseWriterに書き込む
+  - `http.ListenAndServe("3000", nil)`
