@@ -266,4 +266,16 @@ export PATH=$PATH:$GOPATH/bin
   - `http.IndeHandler(w http.ResponseWriter, r *http.Request)`
     - 第二引数にはリクエスト情報が入っている
     - 組み立てた結果をResponseWriterに書き込む
-  - `http.ListenAndServe("3000", nil)`
+  - `http.ListenAndServe(":3000", nil)`
+    - go run server.go
+  - POST受け取ってリクエストボディをJSONに変換
+    - `defer r.Body.Close()`
+    - `r.Method == "POST"`
+    - `decoder := json.NewDecoder(r.Body)`
+    - `err := decoder.Decode(&person)`
+    - `w.WriteHeader(http.StatusCreated) // ステータスコード201`
+  - GETをhttp.Request.Query().Get()で受け取る
+    - `strconv.Atoi(r.URL.Query().Get("id"))`
+- html/templateパッケージ
+  - テンプレートエンジン
+  - text/templateとの違いはエスケープ処理を自動で行うこと。インターフェースは同じ。
