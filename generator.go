@@ -1,8 +1,10 @@
-// generatorは扱う値を実行時に作るので省メモリ
+// +build ignore
+
 package main
 
 import "log"
 
+// generatorは扱う値を実行時に作るので省メモリ
 func generator(n int) chan int {
 	// 同時に1個までしか作成されないことを保証する
 	ch := make(chan int)

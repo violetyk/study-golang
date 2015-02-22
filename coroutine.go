@@ -1,3 +1,5 @@
+// +build ignore
+
 // 途中で処理を中断して再開するcoroutineの実装
 package main
 

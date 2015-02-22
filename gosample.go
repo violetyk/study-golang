@@ -1,3 +1,5 @@
+// +build ignore
+
 package main
 
 // var Message string = "hello world"
