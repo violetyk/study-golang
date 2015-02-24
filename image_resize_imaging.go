@@ -7,9 +7,11 @@ import (
 	"image/jpeg"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"runtime"
 
 	"github.com/disintegration/imaging"
+	"github.com/k0kubun/pp"
 )
 
 func main() {
@@ -26,6 +28,10 @@ func main() {
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		panic(err)
+	}
+	// detect format
+	if reflect.DeepEqual(data[0:2], []byte{0xff, 0xd8}) {
+		pp.Println("Format: jpeg")
 	}
 
 	config, err := jpeg.DecodeConfig(bytes.NewBuffer(data))
@@ -49,6 +55,4 @@ func main() {
 	}
 	defer file2.Close()
 	imaging.Encode(file2, resized, imaging.JPEG)
-	// io.Copy(file2, resized)
-
 }
